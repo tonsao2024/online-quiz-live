@@ -147,13 +147,41 @@ supabase/seed_demo.sql              (ไม่บังคับ) ชุดข�
 
 ---
 
+## Deploy อัตโนมัติ (GitHub Actions)
+
+ไฟล์ `.github/workflows/deploy-pages.yml` จะ **deploy เว็บให้เองทุกครั้งที่ merge เข้า `main`**
+(หรือกดรันเองได้ที่แท็บ Actions → *Deploy web (GitHub Pages)* → Run workflow)
+
+ขั้นตอนใน workflow
+
+| ขั้น | ทำอะไร |
+|---|---|
+| 1. ตรวจไฟล์ | รัน `tools/check-assets.py` — ตรวจว่าไฟล์/ลิงก์ภายในใน `docs/` ครบ ถ้าลิงก์เสียหรือไฟล์หายจะ **หยุดก่อน deploy** และขึ้น error ชี้ไฟล์นั้นในหน้า Actions |
+| 2. ตรวจการตั้งค่า | เช็คว่า Pages เปิดอยู่และ Source เป็น `GitHub Actions` ถ้าไม่ใช่ จะขึ้นข้อความบอกตรง ๆ ว่าต้องไปกดอะไร |
+| 3. อัปโหลด | ส่งโฟลเดอร์ `docs/` เป็น artifact |
+| 4. Deploy | ขึ้น GitHub Pages แล้วสรุป URL ไว้ในหน้า Actions |
+
+**ตั้งค่าครั้งเดียว (จำเป็น):** Settings → **Pages** → *Build and deployment* → **Source: GitHub Actions**
+
+> ถ้าไม่ตั้ง เจ้าของ repo ต้องกดเอง เพราะ token ของ workflow ไม่มีสิทธิ์ admin
+> (workflow จะไม่ล้มเหลวเงียบ ๆ — มันจะขึ้น error บอกให้ไปตั้งก่อน)
+
+ตรวจในเครื่องก่อน push ได้ด้วยคำสั่งเดียว:
+
+```bash
+python3 tools/check-assets.py
+```
+
+---
+
 ## ติดตั้งเอง (ถ้าอยากแยกโปรเจกต์ใหม่)
 
 1. สร้างโปรเจกต์ Supabase ใหม่ (เลือก region `ap-southeast-1` สิงคโปร์ ใกล้ไทยที่สุด)
 2. เปิด SQL Editor → วาง `supabase/migrations/0001_init.sql` ทั้งไฟล์ → Run
 3. Authentication → Providers → Email เปิดไว้ และปิด “Confirm email” (เพื่อให้สมัครแล้วใช้ได้เลย)
 4. คัดลอก `Project URL` + `anon public key` ไปใส่ `docs/assets/js/config.js`
-5. อัปโหลดโฟลเดอร์ `docs/` ขึ้น GitHub แล้วเปิด Settings → Pages → Branch: `main` / folder: `/docs`
+5. อัปโหลดโฟลเดอร์ `docs/` ขึ้น GitHub แล้วเปิด Settings → Pages → Source: **GitHub Actions**
+   (workflow จะ deploy ให้เองเมื่อ merge เข้า `main` — ถ้าอยากใช้แบบ branch ให้เลือก Branch: `main` / folder: `/docs` แทน)
 6. (ถ้าเปลี่ยนโดเมน) แก้ `PUBLIC_URL` ใน `config.js` เพื่อให้ QR ชี้ถูกที่
 
 ---
