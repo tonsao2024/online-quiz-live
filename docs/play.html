@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<meta name="theme-color" content="#0a0b1e" />
+<title>เล่นเกม — ONLIVE QUIZ</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚡</text></svg>" />
+<link rel="stylesheet" href="assets/css/app.css" />
+<style>
+  body{overscroll-behavior:none}
+  .scorebar{display:flex; align-items:center; gap:10px; font-size:13px}
+  .scorebar .who{font-weight:800; max-width:42vw; overflow:hidden; text-overflow:ellipsis; white-space:nowrap}
+  .bigresult{font-size:clamp(26px,7vw,38px); font-weight:900; line-height:1.2}
+  .plus{font-size:clamp(30px,8vw,44px); font-weight:900; color:var(--ok); font-variant-numeric:tabular-nums}
+</style>
+</head>
+<body>
+
+<div class="play-shell">
+  <header class="play-top">
+    <div class="brand" style="gap:8px">
+      <div class="logo" style="width:28px;height:28px;font-size:15px;border-radius:9px">⚡</div>
+    </div>
+    <div class="spacer"></div>
+    <div class="scorebar">
+      <span class="who" id="who"></span>
+      <span class="pill mono" id="myscore" style="display:none">0</span>
+    </div>
+  </header>
+
+  <!-- ============ เข้าร่วม ============ -->
+  <section class="screen on" id="s-join">
+    <div class="card col" style="gap:16px; margin-top:10vh">
+      <div class="join-logo">🎮</div>
+      <div class="tc">
+        <h2 style="font-size:22px">เข้าร่วมห้อง <span class="mono" id="pin-label"></span></h2>
+        <p class="muted small" style="margin-top:6px">ใส่ชื่อที่จะแสดงบนกระดานคะแนน</p>
+      </div>
+      <input id="nick" class="input-nick" maxlength="24" autocomplete="off" placeholder="ชื่อเล่นของท่าน" />
+      <button class="btn btn-primary btn-xl" id="btn-join">เข้าร่วมเกม</button>
+    </div>
+  </section>
+
+  <!-- ============ รอเริ่ม ============ -->
+  <section class="screen" id="s-lobby">
+    <div class="card tc col" style="gap:14px; margin-top:12vh">
+      <div style="font-size:52px">🎉</div>
+      <h2 id="lobby-title" style="font-size:24px">เข้าห้องแล้ว!</h2>
+      <p class="muted">รอผู้จัดเริ่มเกม…</p>
+      <div class="row" style="justify-content:center"><span class="pill" id="lobby-count">0 คนในห้อง</span></div>
+      <div class="loader" style="margin-top:8px"></div>
+    </div>
+  </section>
+
+  <!-- ============ คำถาม ============ -->
+  <section class="screen" id="s-question">
+    <div class="row-between">
+      <span class="pill" id="q-index">ข้อ 1</span>
+      <div class="timer">
+        <svg viewBox="0 0 86 86">
+          <defs><linearGradient id="tg" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0" stop-color="#7c5cff"/><stop offset="1" stop-color="#ff5c8a"/>
+          </linearGradient></defs>
+          <circle class="track" cx="43" cy="43" r="37"/>
+          <circle class="prog" id="ring" cx="43" cy="43" r="37" stroke-dasharray="232.5" stroke-dashoffset="0"/>
+        </svg>
+        <div class="num" id="tnum">20</div>
+      </div>
+    </div>
+    <div class="prompt" id="q-prompt">…</div>
+    <div class="answers" id="q-answers"></div>
+  </section>
+
+  <!-- ============ ตอบแล้ว ============ -->
+  <section class="screen" id="s-answered">
+    <div class="card tc col" style="gap:12px; margin-top:10vh">
+      <div style="font-size:46px">✅</div>
+      <h2 style="font-size:24px">ส่งคำตอบแล้ว</h2>
+      <p class="muted small">รอผู้จัดเฉลย…</p>
+      <div class="plus" id="ans-points">+0</div>
+      <div class="row" style="justify-content:center"><span class="pill mono" id="ans-score">0 คะแนน</span></div>
+      <div class="loader" style="margin-top:6px"></div>
+    </div>
+  </section>
+
+  <!-- ============ เฉลย ============ -->
+  <section class="screen" id="s-reveal">
+    <div class="card tc col" style="gap:12px">
+      <div id="reveal-icon" style="font-size:52px">🎯</div>
+      <div class="bigresult" id="reveal-title">ถูกต้อง!</div>
+      <p class="muted" id="reveal-truth" style="font-size:15px; line-height:1.6"></p>
+      <div class="row" style="justify-content:center; gap:8px">
+        <span class="pill mono" id="reveal-score">0 คะแนน</span>
+        <span class="pill" id="reveal-rank">อันดับ –</span>
+      </div>
+      <div class="loader" style="margin-top:6px"></div>
+      <p class="muted tiny">รอข้อต่อไป…</p>
+    </div>
+  </section>
+
+  <!-- ============ กระดานคะแนน ============ -->
+  <section class="screen" id="s-leaderboard">
+    <div class="row-between"><h2 style="font-size:20px">🏆 กระดานคะแนน</h2><span class="pill" id="lb-total"></span></div>
+    <div class="card card-tight"><div class="res-list" id="lb-list"></div></div>
+    <p class="muted tiny tc">รอผู้จัดเริ่มข้อต่อไป…</p>
+  </section>
+
+  <!-- ============ จบเกม ============ -->
+  <section class="screen" id="s-ended">
+    <div class="card tc col" style="gap:10px">
+      <div style="font-size:52px" id="end-emoji">🏁</div>
+      <h2 style="font-size:22px" id="end-title">จบเกมแล้ว</h2>
+      <div class="plus" id="end-score">0</div>
+      <p class="muted small" id="end-rank"></p>
+    </div>
+    <div class="card card-tight"><div class="res-list" id="end-list"></div></div>
+    <a href="index.html" class="btn btn-ghost btn-block">กลับหน้าแรก</a>
+  </section>
+
+  <!-- ============ ผิดพลาด ============ -->
+  <section class="screen" id="s-error">
+    <div class="card tc col" style="gap:14px; margin-top:12vh">
+      <div style="font-size:48px">😕</div>
+      <h2 style="font-size:20px" id="err-text">เกิดข้อผิดพลาด</h2>
+      <a href="index.html" class="btn btn-primary btn-block">ลองใหม่</a>
+    </div>
+  </section>
+</div>
+
+<script src="assets/js/vendor/supabase.js"></script>
+<script src="assets/js/config.js"></script>
+<script src="assets/js/util.js"></script>
+<script src="assets/js/api.js"></script>
+<script src="assets/js/page-play.js"></script>
+</body>
+</html>
