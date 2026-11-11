@@ -399,7 +399,7 @@
   function headerToField(h) {
     h = h.replace(/\s+/g, "");
     if (!h) return null;
-    if (["question", "prompt", "คำถาม", "โจทย์", "คำถาม?问了"].includes(h)) return "prompt";
+    if (["question", "prompt", "คำถาม", "โจทย์", "คำถามที่"].includes(h)) return "prompt";
     if (["correct", "answer", "เฉลย", "คำตอบ", "คำตอบที่ถูก", "ข้อที่ถูก"].includes(h)) return "correct";
     if (["time", "time_limit", "เวลา", "เวลาวินาที", "วินาที"].includes(h)) return "time_limit";
     if (["points", "score", "คะแนน"].includes(h)) return "points";
