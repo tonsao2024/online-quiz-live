@@ -26,6 +26,16 @@
   });
 
   /* ---------- ผู้จัด ---------- */
+  const hostPanel = $("#host");
+  $("#toggle-host").addEventListener("click", () => {
+    const willShow = hostPanel.classList.contains("hidden");
+    hostPanel.classList.toggle("hidden", !willShow);
+    if (willShow) {
+      hostPanel.scrollIntoView({ behavior: "smooth", block: "center" });
+      setTimeout(() => $("#email").focus(), 320);
+    }
+  });
+  if (location.hash === "#host") hostPanel.classList.remove("hidden");
   $$("#auth-tabs button").forEach((b) => {
     b.addEventListener("click", () => {
       authMode = b.dataset.mode;

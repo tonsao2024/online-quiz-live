@@ -3,30 +3,18 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<meta name="theme-color" content="#0a0b1e" />
+<meta name="theme-color" content="#46178f" />
 <title>ห้องทำงาน — ONLIVE QUIZ</title>
-<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚡</text></svg>" />
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%2346178f'/><text x='50' y='72' font-size='58' text-anchor='middle' fill='white' font-family='sans-serif' font-weight='bold'>Q</text></svg>" />
 <link rel="stylesheet" href="assets/css/app.css" />
-<style>
-  .topbar{display:flex; align-items:center; gap:14px; padding:14px 0; border-bottom:1px solid rgba(255,255,255,.08); margin-bottom:22px}
-  .emoji-row{display:flex; gap:8px; flex-wrap:wrap}
-  .emoji-row button{width:42px; height:42px; border-radius:12px; font-size:20px; cursor:pointer; background:var(--surface-2); border:1px solid var(--border)}
-  .emoji-row button.on{border-color:rgba(124,92,255,.9); background:rgba(124,92,255,.25)}
-  .opt-row{display:flex; align-items:center; gap:9px}
-  .opt-row input[type=radio]{width:20px; height:20px; accent-color:#2fd27a; flex:0 0 auto}
-  .opt-row input[type=text]{flex:1}
-  .q-meta{display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:10px}
-  @media(max-width:640px){.q-meta{grid-template-columns:1fr 1fr}}
-  .editor-actions{position:sticky; bottom:0; padding:14px 0; background:linear-gradient(180deg,rgba(10,11,30,0),rgba(10,11,30,.94) 40%); display:flex; gap:10px; flex-wrap:wrap}
-</style>
 </head>
-<body>
+<body class="theme-admin">
 <div class="wrap">
 
   <div class="topbar">
-    <div class="brand" style="gap:8px">
-      <div class="logo" style="width:30px;height:30px;font-size:16px">⚡</div>
-      <div class="brand-name"><span>ONLIVE QUIZ</span></div>
+    <div class="brand">
+      <div class="logo">⚡</div>
+      <div class="brand-name">Onlive Quiz</div>
     </div>
     <span class="pill hidden" id="who"></span>
     <div class="spacer"></div>
@@ -34,13 +22,15 @@
     <button class="btn btn-sm btn-ghost" id="btn-logout">ออกจากระบบ</button>
   </div>
 
-  <section class="screen on" id="s-loading"><div class="card tc"><div class="loader"></div></div></section>
+  <section class="screen on" id="s-loading">
+    <div class="card tc"><div class="loader"></div></div>
+  </section>
 
   <!-- ============ รายการชุดข้อสอบ ============ -->
   <section class="screen" id="s-list">
     <div class="row-between" style="margin-bottom:16px; flex-wrap:wrap; gap:10px">
       <div>
-        <h1 style="font-size:24px">ชุดข้อสอบของฉัน</h1>
+        <h1 style="font-size:26px">ชุดข้อสอบของฉัน</h1>
         <p class="muted small" style="margin-top:4px">สร้างชุดใหม่ นำเข้าจาก CSV/JSON แล้วเปิดห้องเล่นสดได้ทันที</p>
       </div>
       <div class="row" style="gap:8px">
@@ -88,7 +78,7 @@
       <p class="tiny muted" style="margin-top:14px">เลือกวงกลมสีเขียวหน้าตัวเลือกที่ถูก · รองรับ 2–6 ตัวเลือกต่อข้อ</p>
       <div class="editor-actions">
         <button class="btn btn-primary btn-lg" id="btn-save2">บันทึกชุดข้อสอบ</button>
-        <button class="btn btn-ghost btn-lg" id="btn-play">บันทึก &amp; เปิดห้องเล่นสด</button>
+        <button class="btn btn-dark btn-lg" id="btn-play">บันทึก &amp; เปิดห้องเล่นสด</button>
       </div>
     </div>
   </section>
@@ -99,16 +89,18 @@
       <button class="btn btn-sm btn-ghost" id="btn-import-back">← กลับ</button>
     </div>
     <div class="card">
-      <div class="card-head"><div class="card-title">นำเข้าข้อสอบ</div>
-        <button class="btn btn-sm btn-ghost" id="btn-template">ดาวน์โหลดไฟล์ตัวอย่าง (CSV)</button></div>
-      <div class="tabs" style="margin-bottom:14px">
+      <div class="card-head">
+        <div class="card-title">นำเข้าข้อสอบ</div>
+        <button class="btn btn-sm btn-ghost" id="btn-template">ดาวน์โหลดไฟล์ตัวอย่าง (CSV)</button>
+      </div>
+      <div class="tabs" style="margin-bottom:14px; max-width:320px">
         <button data-tab="csv" class="on">CSV / Excel</button>
         <button data-tab="json">JSON</button>
       </div>
       <div id="tab-csv">
         <p class="muted small" style="line-height:1.7; margin-bottom:10px">
-          คอลัมน์ที่รองรับ: <code>question</code>, <code>option1..option6</code>, <code>correct</code> (เลขข้อ 1–6 หรือ A–F),
-          <code>time_limit</code>, <code>points</code>, <code>image_url</code> — วางจาก Excel ได้เลย (คั่นด้วย Tab)
+          คอลัมน์ที่รองรับ: <b>question</b>, <b>option1..option6</b>, <b>correct</b> (เลขข้อ 1–6 หรือ A–F),
+          <b>time_limit</b>, <b>points</b>, <b>image_url</b> — วางจาก Excel ได้เลย (คั่นด้วย Tab)
         </p>
       </div>
       <div id="tab-json" class="hidden">
@@ -117,7 +109,8 @@
         </p>
       </div>
       <label class="field"><span>วางข้อมูลที่นี่</span>
-        <textarea id="import-text" rows="10" placeholder="วาง CSV หรือ JSON…" style="font-family:ui-monospace,Menlo,monospace; font-size:13px"></textarea>
+        <textarea id="import-text" rows="10" placeholder="วาง CSV หรือ JSON…"
+          style="font-family:ui-monospace,Menlo,monospace; font-size:13px; font-weight:500"></textarea>
       </label>
       <div class="row" style="gap:10px; flex-wrap:wrap">
         <input type="file" id="import-file" accept=".csv,.txt,.json" style="max-width:280px" />

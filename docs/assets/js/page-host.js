@@ -137,7 +137,7 @@
   function renderLobby() {
     $("#pin-big").textContent = pin;
     const url = U.joinUrl(pin);
-    $("#joinurl").textContent = url;
+    $("#joinurl").textContent = U.publicUrl() + "  ·  PIN " + pin;
     $("#qr").innerHTML = U.qrSvg(url);
     $("#lobby-quiz").textContent = snap.quiz_title + " · " + snap.question_count + " ข้อ";
     $("#chk-late").checked = !!snap.allow_late;
@@ -152,7 +152,9 @@
       grid.textContent = "ยังไม่มีใครเข้าห้อง — แชร์ PIN ให้ผู้เข้าอบรม";
     } else {
       grid.className = "players-grid";
-      grid.innerHTML = players.map((p) => '<div class="player-chip">👤 ' + esc(p.nickname) + "</div>").join("");
+      grid.innerHTML = players.map((p) =>
+        '<div class="player-chip"><span class="av">' + esc(U.initials(p.nickname)) + '</span>' +
+        '<span class="nm">' + esc(p.nickname) + "</span></div>").join("");
     }
     $("#btn-start").disabled = players.length === 0;
   }
@@ -165,7 +167,7 @@
     $("#h-prompt").innerHTML = esc(q.prompt) +
       (q.image_url ? '<img class="qimg" src="' + esc(q.image_url) + '" alt="" style="margin-top:14px">' : "");
     $("#h-answers").innerHTML = q.options.map((opt, i) =>
-      '<div class="host-ans ' + COLOR[i % 6] + '"><span>' + U.shapes(i) + "</span><span>" + esc(opt) + "</span></div>"
+      '<div class="host-ans ' + COLOR[i % 6] + '"><span class="sh">' + U.shapes(i) + '</span><span>' + esc(opt) + "</span></div>"
     ).join("");
     $("#q-points").textContent = "ให้ " + fmt(q.points) + " คะแนน · " + q.time_limit + " วินาที";
     $("#answered-n").textContent = "0";
@@ -188,7 +190,7 @@
     $("#r-prompt").textContent = q.prompt;
     $("#r-answers").innerHTML = q.options.map((opt, i) =>
       '<div class="host-ans ' + COLOR[i % 6] + (i === correct ? " is-correct" : " not-correct") + '">' +
-      "<span>" + U.shapes(i) + "</span><span>" + esc(opt) + "</span>" +
+      '<span class="sh">' + U.shapes(i) + "</span><span>" + esc(opt) + "</span>" +
       (i === correct ? '<span style="margin-left:auto">✓</span>' : "") + "</div>"
     ).join("");
 
@@ -196,8 +198,11 @@
     const counts = q.options.map((_, i) => Number(dist[String(i)] || 0));
     const max = Math.max(1, ...counts);
     $("#r-bars").innerHTML = q.options.map((opt, i) =>
-      '<div class="bar-row"><div class="bar-wrap"><div class="bar-fill ' + COLOR[i % 6] + '" ' +
+      '<div class="bar-row"><div>' +
+      '<div class="bar-name">' + U.shapes(i) + " " + esc(opt) + "</div>" +
+      '<div class="bar-wrap"><div class="bar-fill ' + COLOR[i % 6] + '" ' +
       'style="width:' + (counts[i] / max * 100) + '%;background:var(--a' + ((i % 6) + 1) + ')"></div></div>' +
+      "</div>" +
       '<div class="n">' + counts[i] + "</div></div>"
     ).join("");
     $("#r-stat").textContent = "ตอบถูก " + (snap.correct || 0) + " / " + (snap.answered || 0) + " คน";
@@ -221,9 +226,9 @@
   function renderRows(el, rows) {
     if (!rows.length) { el.innerHTML = '<p class="muted small tc">ยังไม่มีผู้เล่น</p>'; return; }
     el.innerHTML = rows.map((p, i) => {
-      const medal = i === 0 ? "🥇" : i === 1 ? "🥈" : i === 2 ? "🥉" : i + 1;
+      const cls = i === 0 ? "t1" : i === 1 ? "t2" : i === 2 ? "t3" : "";
       return '<div class="res-row">' +
-        '<div class="rank top">' + medal + "</div>" +
+        '<div class="rank ' + cls + '">' + (i + 1) + "</div>" +
         '<div style="flex:1; font-weight:700; overflow:hidden; text-overflow:ellipsis; white-space:nowrap">' + esc(p.nickname) + "</div>" +
         '<div class="tiny muted">ถูก ' + p.correct_count + " ข้อ</div>" +
         '<div class="mono" style="font-weight:800; min-width:64px; text-align:right">' + fmt(p.score) + "</div></div>";

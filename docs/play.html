@@ -3,51 +3,48 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-<meta name="theme-color" content="#0a0b1e" />
+<meta name="theme-color" content="#46178f" />
 <title>เล่นเกม — ONLIVE QUIZ</title>
-<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚡</text></svg>" />
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%2346178f'/><text x='50' y='72' font-size='58' text-anchor='middle' fill='white' font-family='sans-serif' font-weight='bold'>Q</text></svg>" />
 <link rel="stylesheet" href="assets/css/app.css" />
-<style>
-  body{overscroll-behavior:none}
-  .scorebar{display:flex; align-items:center; gap:10px; font-size:13px}
-  .scorebar .who{font-weight:800; max-width:42vw; overflow:hidden; text-overflow:ellipsis; white-space:nowrap}
-  .bigresult{font-size:clamp(26px,7vw,38px); font-weight:900; line-height:1.2}
-  .plus{font-size:clamp(30px,8vw,44px); font-weight:900; color:var(--ok); font-variant-numeric:tabular-nums}
-</style>
+<style>body{overscroll-behavior:none}</style>
 </head>
-<body>
+<body class="theme-play">
 
 <div class="play-shell">
   <header class="play-top">
-    <div class="brand" style="gap:8px">
-      <div class="logo" style="width:28px;height:28px;font-size:15px;border-radius:9px">⚡</div>
+    <div class="brand" style="gap:7px">
+      <div class="logo" style="width:26px;height:26px;font-size:14px;border-radius:7px">⚡</div>
+      <div class="brand-name" style="font-size:12px">Onlive</div>
     </div>
     <div class="spacer"></div>
     <div class="scorebar">
       <span class="who" id="who"></span>
-      <span class="pill mono" id="myscore" style="display:none">0</span>
+      <span class="pts mono" id="myscore" style="display:none">0</span>
     </div>
   </header>
 
-  <!-- ============ เข้าร่วม ============ -->
+  <!-- ============ ใส่ชื่อ ============ -->
   <section class="screen on" id="s-join">
-    <div class="card col" style="gap:16px; margin-top:10vh">
-      <div class="join-logo">🎮</div>
+    <div class="card col" style="gap:14px">
       <div class="tc">
-        <h2 style="font-size:22px">เข้าร่วมห้อง <span class="mono" id="pin-label"></span></h2>
-        <p class="muted small" style="margin-top:6px">ใส่ชื่อที่จะแสดงบนกระดานคะแนน</p>
+        <h2 style="font-size:22px">ใส่ชื่อของท่าน</h2>
+        <p class="muted small" style="margin-top:5px">ชื่อนี้จะแสดงบนกระดานคะแนน</p>
       </div>
-      <input id="nick" class="input-nick" maxlength="24" autocomplete="off" placeholder="ชื่อเล่นของท่าน" />
-      <button class="btn btn-primary btn-xl" id="btn-join">เข้าร่วมเกม</button>
+      <input id="nick" class="input-nick" maxlength="24" autocomplete="off" placeholder="Nickname" />
+      <button class="btn-enter" id="btn-join">Okay, go!</button>
     </div>
+    <p class="tc" style="color:rgba(255,255,255,.72); font-size:12px; font-weight:800; letter-spacing:.06em">
+      PIN <span id="pin-label" class="mono"></span>
+    </p>
   </section>
 
   <!-- ============ รอเริ่ม ============ -->
   <section class="screen" id="s-lobby">
-    <div class="card tc col" style="gap:14px; margin-top:12vh">
-      <div style="font-size:52px">🎉</div>
-      <h2 id="lobby-title" style="font-size:24px">เข้าห้องแล้ว!</h2>
-      <p class="muted">รอผู้จัดเริ่มเกม…</p>
+    <div class="card tc col" style="gap:12px">
+      <div class="verdict ok"></div>
+      <h2 id="lobby-title" style="font-size:22px">You're in!</h2>
+      <p class="muted small">ชื่อของท่านจะขึ้นบนจอผู้จัด — รอสักครู่</p>
       <div class="row" style="justify-content:center"><span class="pill" id="lobby-count">0 คนในห้อง</span></div>
       <div class="loader" style="margin-top:8px"></div>
     </div>
@@ -58,12 +55,9 @@
     <div class="row-between">
       <span class="pill" id="q-index">ข้อ 1</span>
       <div class="timer">
-        <svg viewBox="0 0 86 86">
-          <defs><linearGradient id="tg" x1="0" y1="0" x2="1" y2="1">
-            <stop offset="0" stop-color="#7c5cff"/><stop offset="1" stop-color="#ff5c8a"/>
-          </linearGradient></defs>
-          <circle class="track" cx="43" cy="43" r="37"/>
-          <circle class="prog" id="ring" cx="43" cy="43" r="37" stroke-dasharray="232.5" stroke-dashoffset="0"/>
+        <svg viewBox="0 0 84 84">
+          <circle class="track" cx="42" cy="42" r="36"/>
+          <circle class="prog" id="ring" cx="42" cy="42" r="36" stroke-dasharray="226.2" stroke-dashoffset="0"/>
         </svg>
         <div class="num" id="tnum">20</div>
       </div>
@@ -74,9 +68,9 @@
 
   <!-- ============ ตอบแล้ว ============ -->
   <section class="screen" id="s-answered">
-    <div class="card tc col" style="gap:12px; margin-top:10vh">
-      <div style="font-size:46px">✅</div>
-      <h2 style="font-size:24px">ส่งคำตอบแล้ว</h2>
+    <div class="card tc col" style="gap:10px">
+      <div class="verdict ok"></div>
+      <h2 style="font-size:22px">ส่งคำตอบแล้ว</h2>
       <p class="muted small">รอผู้จัดเฉลย…</p>
       <div class="plus" id="ans-points">+0</div>
       <div class="row" style="justify-content:center"><span class="pill mono" id="ans-score">0 คะแนน</span></div>
@@ -86,10 +80,10 @@
 
   <!-- ============ เฉลย ============ -->
   <section class="screen" id="s-reveal">
-    <div class="card tc col" style="gap:12px">
-      <div id="reveal-icon" style="font-size:52px">🎯</div>
+    <div class="card tc col" style="gap:10px">
+      <div id="reveal-icon" class="verdict none"></div>
       <div class="bigresult" id="reveal-title">ถูกต้อง!</div>
-      <p class="muted" id="reveal-truth" style="font-size:15px; line-height:1.6"></p>
+      <p class="muted" id="reveal-truth" style="font-size:15px; line-height:1.55"></p>
       <div class="row" style="justify-content:center; gap:8px">
         <span class="pill mono" id="reveal-score">0 คะแนน</span>
         <span class="pill" id="reveal-rank">อันดับ –</span>
@@ -101,29 +95,32 @@
 
   <!-- ============ กระดานคะแนน ============ -->
   <section class="screen" id="s-leaderboard">
-    <div class="row-between"><h2 style="font-size:20px">🏆 กระดานคะแนน</h2><span class="pill" id="lb-total"></span></div>
+    <div class="row-between" style="padding:0 2px">
+      <h2 style="font-size:19px; color:#fff">กระดานคะแนน</h2>
+      <span class="pill" id="lb-total"></span>
+    </div>
     <div class="card card-tight"><div class="res-list" id="lb-list"></div></div>
-    <p class="muted tiny tc">รอผู้จัดเริ่มข้อต่อไป…</p>
+    <p class="tc" style="color:rgba(255,255,255,.7); font-size:12px; font-weight:700">รอผู้จัดเริ่มข้อต่อไป…</p>
   </section>
 
   <!-- ============ จบเกม ============ -->
   <section class="screen" id="s-ended">
-    <div class="card tc col" style="gap:10px">
-      <div style="font-size:52px" id="end-emoji">🏁</div>
-      <h2 style="font-size:22px" id="end-title">จบเกมแล้ว</h2>
+    <div class="card tc col" style="gap:8px">
+      <div class="rankbadge" id="end-emoji">1</div>
+      <h2 style="font-size:21px" id="end-title">จบเกมแล้ว</h2>
       <div class="plus" id="end-score">0</div>
       <p class="muted small" id="end-rank"></p>
     </div>
     <div class="card card-tight"><div class="res-list" id="end-list"></div></div>
-    <a href="index.html" class="btn btn-ghost btn-block">กลับหน้าแรก</a>
+    <a href="index.html" class="btn btn-dark btn-block">กลับหน้าแรก</a>
   </section>
 
   <!-- ============ ผิดพลาด ============ -->
   <section class="screen" id="s-error">
-    <div class="card tc col" style="gap:14px; margin-top:12vh">
-      <div style="font-size:48px">😕</div>
-      <h2 style="font-size:20px" id="err-text">เกิดข้อผิดพลาด</h2>
-      <a href="index.html" class="btn btn-primary btn-block">ลองใหม่</a>
+    <div class="card tc col" style="gap:14px">
+      <div class="verdict none"></div>
+      <h2 style="font-size:19px" id="err-text">เกิดข้อผิดพลาด</h2>
+      <a href="index.html" class="btn-enter" style="text-align:center; text-decoration:none">ลองใหม่</a>
     </div>
   </section>
 </div>

@@ -182,7 +182,7 @@
       const left = Math.max(0, endsAt - (Date.now() + offset));
       num.textContent = Math.ceil(left / 1000);
       const frac = Math.max(0, Math.min(1, left / total));
-      ring.setAttribute("stroke-dashoffset", String(232.5 * (1 - frac)));
+      ring.setAttribute("stroke-dashoffset", String(226.2 * (1 - frac)));
       if (left <= 0) {
         stopTimer();
         $$(".ans").forEach((b) => { b.disabled = true; b.classList.add("dim"); });
@@ -234,10 +234,13 @@
     let right = null;
     if (lastAnswer && typeof lastAnswer.is_correct === "boolean") right = lastAnswer.is_correct;
 
-    $("#reveal-icon").textContent = right === true ? "🎉" : right === false ? "😅" : "🎯";
-    $("#reveal-title").textContent = right === true ? "ถูกต้อง!" : right === false ? "ยังไม่ถูก" : "เฉลย";
+    const icon = $("#reveal-icon");
+    icon.className = "verdict " + (right === true ? "ok" : right === false ? "no" : "none");
+    const title = $("#reveal-title");
+    title.textContent = right === true ? "ถูกต้อง!" : right === false ? "ยังไม่ถูก" : "เฉลย";
+    title.style.color = right === true ? "var(--a4)" : right === false ? "var(--a1)" : "var(--ink)";
     $("#reveal-truth").innerHTML = truth
-      ? 'คำตอบที่ถูกคือ <b style="color:#8cf3b8">' + esc(truth) + "</b>"
+      ? 'คำตอบที่ถูกคือ <b style="color:var(--ok)">' + esc(truth) + "</b>"
       : "";
     if (lastAnswer) {
       $("#reveal-score").textContent = "+" + fmt(lastAnswer.points) + " → " + fmt(lastAnswer.score) + " คะแนน";
@@ -259,9 +262,9 @@
     if (!rows || !rows.length) { el.innerHTML = '<p class="muted small tc">ยังไม่มีข้อมูล</p>'; return; }
     el.innerHTML = rows.map((p) => {
       const isMe = me && p.nickname === me;
-      const medal = p.rank === 1 ? "🥇" : p.rank === 2 ? "🥈" : p.rank === 3 ? "🥉" : "";
+      const cls = p.rank === 1 ? "t1" : p.rank === 2 ? "t2" : p.rank === 3 ? "t3" : "";
       return '<div class="res-row' + (isMe ? " me" : "") + '">' +
-        '<div class="rank' + (p.rank <= 3 ? " top" : "") + '">' + medal + (medal ? "" : p.rank) + "</div>" +
+        '<div class="rank ' + cls + '">' + p.rank + "</div>" +
         '<div style="flex:1; font-weight:600; overflow:hidden; text-overflow:ellipsis; white-space:nowrap">' + esc(p.nickname) + "</div>" +
         '<div class="mono" style="font-weight:800">' + fmt(p.score) + "</div>" +
         "</div>";
@@ -271,8 +274,10 @@
   function renderEnded() {
     if (!player) return;
     const rank = player.rank;
-    $("#end-emoji").textContent = rank === 1 ? "🥇" : rank <= 3 ? "🏆" : rank <= 10 ? "🎉" : "🏁";
-    $("#end-title").textContent = rank === 1 ? "ยินดีด้วย! ที่ 1" : "จบเกมแล้ว";
+    const badge = $("#end-emoji");
+    badge.textContent = rank;
+    badge.className = "rankbadge" + (rank === 1 ? " gold" : rank === 2 ? " silver" : rank === 3 ? " bronze" : "");
+    $("#end-title").textContent = rank === 1 ? "ยินดีด้วย! ที่ 1" : rank === 2 ? "ยินดีด้วย! ที่ 2" : rank === 3 ? "ยินดีด้วย! ที่ 3" : "จบเกมแล้ว";
     $("#end-score").textContent = fmt(player.score);
     $("#end-rank").textContent = "อันดับ " + rank + " จาก " + (state.player_count || 0) + " คน · ตอบถูก " +
       player.correct_count + " ข้อ";
