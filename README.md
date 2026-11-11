@@ -13,13 +13,20 @@
 
 ## หน้าตา
 
-| เข้าร่วม (มือถือ) | เล่นเกม (มือถือ) |
+| เข้าร่วม (เดสก์ท็อป) | เข้าร่วม (มือถือ) |
 |---|---|
-| ![](docs/assets/img/preview-join.png) | ![](docs/assets/img/preview-play.png) |
+| ![](docs/assets/img/preview-join.png) | ![](docs/assets/img/preview-join-mobile.png) |
 
-| จอผู้จัด — คำถาม | จอผู้จัด — เฉลย |
+| เล่นเกม (มือถือ) | จอผู้จัด — เฉลย |
 |---|---|
-| ![](docs/assets/img/preview-host.png) | ![](docs/assets/img/preview-host-reveal.png) |
+| ![](docs/assets/img/preview-play.png) | ![](docs/assets/img/preview-host-reveal.png) |
+
+| จอผู้จัด — คำถาม |
+|---|
+| ![](docs/assets/img/preview-host.png) |
+
+> ค่าสี/ขนาด/ระยะทั้งหมดวัดจาก kahoot.it จริง (สแกนพิกเซล + วัดกล่อง) และบันทึกหลักฐานไว้ที่
+> [`docs/design/kahoot-study.md`](docs/design/kahoot-study.md)
 
 ---
 

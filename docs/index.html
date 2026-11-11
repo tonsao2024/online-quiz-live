@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-<meta name="theme-color" content="#46178f" />
+<meta name="theme-color" content="#371272" />
 <title>ONLIVE QUIZ — เกมตอบคำถามสดสำหรับการอบรม</title>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%2346178f'/><text x='50' y='72' font-size='58' text-anchor='middle' fill='white' font-family='sans-serif' font-weight='bold'>Q</text></svg>" />
 <link rel="stylesheet" href="assets/css/app.css" />
@@ -12,22 +12,20 @@
 
 <div class="k-page">
 
-  <header class="k-topbar">
-    <div class="brand">
-      <div class="logo">⚡</div>
-      <div class="brand-name">Onlive Quiz</div>
-    </div>
+  <header class="k-top">
     <button class="k-link" id="toggle-host">สำหรับผู้จัด</button>
   </header>
 
   <main class="k-main">
     <div class="k-logo-big"><span>onlive</span> <em>quiz</em></div>
 
-    <form class="k-join" id="join-form" autocomplete="off">
-      <input id="pin-input" class="k-input" inputmode="numeric" maxlength="6"
-             placeholder="Game PIN" aria-label="Game PIN" />
-      <button class="btn-enter" type="submit">Enter</button>
-    </form>
+    <div class="k-card">
+      <form class="k-join" id="join-form" autocomplete="off">
+        <input id="pin-input" class="k-input" inputmode="numeric" maxlength="6"
+               placeholder="Game PIN" aria-label="Game PIN" />
+        <button class="btn-enter" type="submit">Enter</button>
+      </form>
+    </div>
 
     <p class="k-note">กรอก PIN ที่เห็นบนจอผู้จัด · ไม่ต้องสมัครสมาชิก</p>
 
@@ -57,10 +55,6 @@
       </div>
     </div>
   </main>
-
-  <footer class="tc" style="padding:10px 0 4px; color:rgba(255,255,255,.6); font-size:11.5px; font-weight:700">
-    ONLIVE QUIZ · GitHub Pages + Supabase
-  </footer>
 </div>
 
 <script src="assets/js/vendor/supabase.js"></script>
