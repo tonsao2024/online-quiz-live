@@ -49,7 +49,7 @@
       }
       el.innerHTML = list.map((q) =>
         '<div class="quiz-card">' +
-        '<div class="row"><div class="quiz-emoji">' + esc(q.emoji || "🎯") + "</div>" +
+        '<div class="row"><div class="quiz-emoji">' + esc((q.title || "?").trim().charAt(0)) + "</div>" +
         '<div style="min-width:0"><div style="font-weight:800; overflow:hidden; text-overflow:ellipsis; white-space:nowrap">' + esc(q.title) + "</div>" +
         '<div class="tiny muted">' + q.question_count + " ข้อ" + (q.description ? " · " + esc(q.description) : "") + "</div></div></div>" +
         '<div class="row" style="gap:6px">' +

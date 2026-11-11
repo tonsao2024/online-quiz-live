@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-<meta name="theme-color" content="#46178f" />
+<meta name="theme-color" content="#371272" />
 <title>ห้องผู้จัด — ONLIVE QUIZ</title>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%2346178f'/><text x='50' y='72' font-size='58' text-anchor='middle' fill='white' font-family='sans-serif' font-weight='bold'>Q</text></svg>" />
 <link rel="stylesheet" href="assets/css/app.css" />
@@ -16,14 +16,12 @@
       <div class="logo">⚡</div>
       <div class="brand-name">Onlive Quiz</div>
     </div>
-    <span class="pill hidden" id="top-status"></span>
+    <span class="pill pill-live hidden" id="top-status"></span>
     <div class="spacer"></div>
-    <div class="row" style="gap:8px">
-      <span class="small muted hidden" id="top-quiz" style="font-weight:800"></span>
-      <span class="pin-chip hidden" id="top-pin"></span>
-      <a class="btn btn-sm btn-ghost" href="admin.html">ห้องทำงาน</a>
-      <button class="btn btn-sm btn-ghost hidden" id="btn-logout">ออก</button>
-    </div>
+    <span class="small hidden" id="top-quiz" style="font-weight:800; opacity:.8"></span>
+    <span class="pin-chip hidden" id="top-pin"></span>
+    <a class="btn btn-sm btn-ghost" href="admin.html">ห้องทำงาน</a>
+    <button class="btn btn-sm btn-ghost hidden" id="btn-logout">ออก</button>
   </div>
 
   <section class="screen on" id="s-loading">
@@ -32,87 +30,82 @@
 
   <!-- ============ เลือกชุดข้อสอบ ============ -->
   <section class="screen" id="s-pick">
-    <div class="card">
-      <div class="card-head">
+    <div class="row-between" style="margin-bottom:14px">
+      <div class="qcard" style="padding:12px 20px">
         <div class="card-title">เลือกชุดข้อสอบเพื่อเปิดห้อง</div>
-        <a class="btn btn-sm btn-ghost" href="admin.html">จัดการข้อสอบ</a>
       </div>
-      <div id="pick-list" class="grid grid-2"></div>
+      <a class="btn btn-ghost" href="admin.html">จัดการข้อสอบ</a>
     </div>
+    <div id="pick-list" class="grid grid-2"></div>
   </section>
 
   <!-- ============ ห้องรอ ============ -->
   <section class="screen" id="s-lobby">
-    <div class="card">
-      <div class="lobby-hero">
-        <div class="col" style="gap:8px; align-items:flex-start">
-          <span class="pill pill-live"><i class="dot"></i> รอผู้เข้าร่วม</span>
-          <div class="tiny muted" style="font-weight:900; letter-spacing:.09em; margin-top:6px">GAME PIN</div>
-          <div class="pin-display" id="pin-big">------</div>
-          <p class="muted small">ให้ทุกคนเปิดเว็บแล้วกรอก PIN นี้ หรือสแกน QR ด้านขวา</p>
-          <div class="row" style="gap:8px; flex-wrap:wrap; margin-top:4px">
-            <span class="pill" id="lobby-count">0 คน</span>
-            <button class="btn btn-sm btn-ghost" id="btn-copy">คัดลอกลิงก์</button>
-            <button class="btn btn-sm btn-ghost" id="btn-open">เปิดจอผู้เล่น</button>
-          </div>
-        </div>
-        <div class="qr-side">
-          <div class="qr" id="qr"></div>
-          <div class="joinurl" id="joinurl"></div>
+    <div class="lobby-hero">
+      <div class="pin-block">
+        <span class="pill pill-live"><i class="dot"></i> รอผู้เข้าร่วม</span>
+        <div class="pin-label" style="margin-top:10px">Game PIN</div>
+        <div class="pin-display" id="pin-big">------</div>
+        <p class="join-hint">ให้ทุกคนเปิดเว็บแล้วกรอก PIN นี้ หรือสแกน QR ด้านขวา</p>
+        <div class="lobby-actions">
+          <span class="pill" id="lobby-count">0 คน</span>
+          <button class="btn btn-sm btn-ghost" id="btn-copy">คัดลอกลิงก์</button>
+          <button class="btn btn-sm btn-ghost" id="btn-open">เปิดจอผู้เล่น</button>
         </div>
       </div>
-      <div class="footbar">
-        <button class="btn btn-primary btn-lg" id="btn-start">เริ่มเกม →</button>
-        <label class="switch"><input type="checkbox" id="chk-late" /> อนุญาตให้เข้าห้องกลางเกม</label>
-        <div class="spacer"></div>
-        <span class="tiny muted" id="lobby-quiz"></span>
+      <div class="qr-side">
+        <div class="qr" id="qr"></div>
+        <div class="joinurl" id="joinurl"></div>
       </div>
     </div>
 
-    <div class="card" style="margin-top:16px">
-      <div class="card-head">
-        <div class="card-title">ผู้เข้าร่วม</div>
-        <span class="pill" id="lobby-count2">0 คน</span>
-      </div>
-      <div class="players-grid empty" id="players">ยังไม่มีใครเข้าห้อง — แชร์ PIN ให้ผู้เข้าอบรม</div>
+    <div class="footbar">
+      <button class="btn btn-hero btn-lg" id="btn-start">เริ่มเกม →</button>
+      <label class="switch"><input type="checkbox" id="chk-late" /> อนุญาตให้เข้าห้องกลางเกม</label>
+      <div class="spacer"></div>
+      <span class="tiny" id="lobby-quiz"></span>
     </div>
+
+    <div class="row-between players-head" style="margin:0 0 10px">
+      <div class="card-title" style="color:#fff">ผู้เข้าร่วม</div>
+      <span class="pill" id="lobby-count2">0 คน</span>
+    </div>
+    <div class="players-grid empty" id="players">ยังไม่มีใครเข้าห้อง — แชร์ PIN ให้ผู้เข้าอบรม</div>
   </section>
 
   <!-- ============ กำลังถาม ============ -->
   <section class="screen" id="s-question">
-    <div class="card">
-      <div class="row-between" style="margin-bottom:12px">
-        <span class="pill" id="q-idx">ข้อ 1</span>
-        <div class="row" style="gap:20px">
-          <div class="stat" style="align-items:center"><div class="v" id="answered-n">0</div><div class="k">ตอบแล้ว</div></div>
-          <div class="timer-big" id="host-timer">20</div>
-        </div>
-      </div>
-      <div class="progress" style="margin-bottom:18px"><i id="answered-bar"></i></div>
+    <div class="stage-head">
+      <span class="pill" id="q-idx">ข้อ 1</span>
+      <div class="timer-big" id="host-timer">20</div>
+    </div>
+    <div class="progress"><i id="answered-bar"></i></div>
+    <div class="qcard">
       <div class="host-prompt" id="h-prompt">…</div>
-      <div class="host-answers" id="h-answers" style="margin-top:18px"></div>
-      <div class="footbar">
-        <button class="btn btn-primary btn-lg" id="btn-reveal">เฉลยเลย</button>
-        <label class="switch"><input type="checkbox" id="chk-auto" checked /> เฉลยอัตโนมัติเมื่อหมดเวลา</label>
-        <div class="spacer"></div>
-        <span class="tiny muted" id="q-points"></span>
-      </div>
+    </div>
+    <div class="host-answers" id="h-answers"></div>
+    <span class="answered-bar"><b id="answered-n">0</b> คนตอบแล้ว</span>
+    <div class="footbar">
+      <button class="btn btn-hero btn-lg" id="btn-reveal">เฉลยเลย</button>
+      <label class="switch"><input type="checkbox" id="chk-auto" checked /> เฉลยอัตโนมัติเมื่อหมดเวลา</label>
+      <div class="spacer"></div>
+      <span class="tiny" id="q-points"></span>
     </div>
   </section>
 
   <!-- ============ เฉลย ============ -->
   <section class="screen" id="s-reveal">
-    <div class="grid" style="grid-template-columns:1.3fr .7fr; gap:16px" id="reveal-grid">
+    <div class="grid" style="grid-template-columns:1.35fr .65fr" id="reveal-grid">
       <div class="card">
         <div class="card-head">
           <div class="card-title" id="r-title">เฉลย</div>
           <span class="pill" id="r-count"></span>
         </div>
-        <div class="host-prompt" id="r-prompt" style="margin-bottom:16px; font-size:clamp(20px,2.6vw,26px)"></div>
+        <div class="host-prompt" id="r-prompt" style="margin-bottom:16px; font-size:clamp(19px,2.4vw,26px)"></div>
         <div class="host-answers" id="r-answers"></div>
         <div class="footbar">
           <button class="btn btn-primary btn-lg" id="btn-next">ข้อต่อไป →</button>
-          <button class="btn btn-ghost btn-lg" id="btn-lb">กระดานคะแนน</button>
+          <button class="btn btn-lg" id="btn-lb">กระดานคะแนน</button>
           <div class="spacer"></div>
           <span class="tiny muted" id="r-stat"></span>
         </div>
@@ -134,7 +127,7 @@
       <div class="res-list" id="h-lb"></div>
       <div class="footbar">
         <button class="btn btn-primary btn-lg" id="btn-next2">ข้อต่อไป →</button>
-        <button class="btn btn-ghost btn-lg" id="btn-finish">จบเกม</button>
+        <button class="btn btn-lg" id="btn-finish">จบเกม</button>
       </div>
     </div>
   </section>
@@ -149,16 +142,12 @@
       <div class="res-list" id="end-lb"></div>
       <div class="footbar">
         <a class="btn btn-primary btn-lg" href="admin.html">กลับห้องทำงาน</a>
-        <button class="btn btn-ghost btn-lg" id="btn-again">เล่นชุดนี้อีกครั้ง</button>
+        <button class="btn btn-lg" id="btn-again">เล่นชุดนี้อีกครั้ง</button>
       </div>
     </div>
   </section>
 
 </div>
-
-<style>
-@media(max-width:860px){ #reveal-grid{grid-template-columns:1fr !important} }
-</style>
 
 <script src="assets/js/vendor/supabase.js"></script>
 <script src="assets/js/vendor/qrcode.js"></script>

@@ -21,9 +21,9 @@
 |---|---|
 | ![](docs/assets/img/preview-play.png) | ![](docs/assets/img/preview-host-reveal.png) |
 
-| จอผู้จัด — คำถาม |
-|---|
-| ![](docs/assets/img/preview-host.png) |
+| จอผู้จัด — ห้องรอ | จอผู้จัด — คำถาม |
+|---|---|
+| ![](docs/assets/img/preview-host-lobby.png) | ![](docs/assets/img/preview-host.png) |
 
 > ค่าสี/ขนาด/ระยะทั้งหมดวัดจาก kahoot.it จริง (สแกนพิกเซล + วัดกล่อง) และบันทึกหลักฐานไว้ที่
 > [`docs/design/kahoot-study.md`](docs/design/kahoot-study.md)

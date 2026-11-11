@@ -52,7 +52,7 @@
         return;
       }
       list.innerHTML = quizzes.map((q) =>
-        '<div class="quiz-card"><div class="row"><div class="quiz-emoji">' + esc(q.emoji || "🎯") + "</div>" +
+        '<div class="quiz-card"><div class="row"><div class="quiz-emoji">' + esc((q.title || "?").trim().charAt(0)) + "</div>" +
         '<div><div style="font-weight:800">' + esc(q.title) + "</div>" +
         '<div class="tiny muted">' + q.question_count + " ข้อ</div></div></div>" +
         '<button class="btn btn-primary btn-block" data-quiz="' + q.id + '">เปิดห้องเล่นสด</button></div>'
