@@ -1,0 +1,586 @@
+/* ============================================================================
+   ONLIVE QUIZ — design system v2 (Kahoot-style)
+   ----------------------------------------------------------------------------
+   โทน: พื้นม่วงเข้ม + ลายเรขาคณิต (หน้าผู้เล่น/จอผู้จัด) · การ์ดขาว · ไทล์ 4 สี
+   ค่าสีหลักวัดจาก kahoot.it จริง — ดู docs/design/kahoot-study.md
+   โครงไฟล์: 1 tokens · 2 base · 3 utilities · 4 buttons · 5 cards/forms
+            6 topbar · 7 landing · 8 player · 9 host stage · 10 admin
+            11 lists/bars · 12 responsive (ต้องอยู่ท้ายไฟล์เสมอ)
+   ============================================================================ */
+
+/* ---------- 1. tokens ---------- */
+@font-face{
+  font-family:"Montserrat";
+  src:url("../fonts/montserrat-latin.woff2") format("woff2");
+  font-weight:100 900; font-style:normal; font-display:swap;
+}
+@font-face{
+  font-family:"Noto Sans Thai";
+  src:url("../fonts/noto-sans-thai.woff2") format("woff2");
+  font-weight:100 900; font-style:normal; font-display:swap;
+}
+
+:root{
+  /* แบรนด์ */
+  --purple:#46178f;
+  --purple-bg:#371272;
+  --purple-shape:#321066;
+  --purple-hi:#8b5cd6;
+  --purple-deep:#2b0a5f;
+
+  /* กลาง */
+  --ink:#1a1a1a;
+  --dark:#333;
+  --dark-edge:#262626;
+  --gray:#6b6b6b;
+  --line:#e2e2e2;
+  --bg:#f2f2f2;
+  --white:#fff;
+
+  /* ไทล์คำตอบ */
+  --a1:#e21b43;
+  --a2:#1368ce;
+  --a3:#ffa602;
+  --a4:#26890c;
+  --a5:#864cbf;
+  --a6:#0aa3a3;
+  --ok:#26890c;
+  --bad:#e21b43;
+
+  /* ทรง */
+  --r-xs:4px;
+  --r:8px;
+  --r-lg:14px;
+  --r-pill:99px;
+
+  /* เงา */
+  --sh-card:0 2px 0 rgba(0,0,0,.05), 0 10px 26px rgba(0,0,0,.09);
+  --sh-tile:inset 0 -4px 0 rgba(0,0,0,.16);
+  --sh-btn:0 3px 0 rgba(0,0,0,.20);
+  --sh-pop:0 12px 40px rgba(0,0,0,.28);
+
+  --font:"Montserrat","Noto Sans Thai","Sarabun",system-ui,-apple-system,"Segoe UI",sans-serif;
+
+  /* ค่าเริ่มต้น = ธีมสว่าง (แอดมิน) */
+  --fg:var(--ink);
+  --muted:var(--gray);
+  --surface:#fff;
+  --hairline:var(--line);
+}
+
+/* ---------- 2. base ---------- */
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{
+  margin:0; min-height:100dvh;
+  font-family:var(--font); font-weight:600; color:var(--fg);
+  background:var(--bg); -webkit-font-smoothing:antialiased; overflow-wrap:break-word;
+}
+h1,h2,h3,h4{margin:0; line-height:1.15; letter-spacing:-.02em}
+p{margin:0}
+a{color:inherit}
+button,input,textarea,select{font-family:inherit}
+img,svg{max-width:100%}
+::selection{background:rgba(70,23,143,.25)}
+
+/* ธีมม่วง (หน้าแรก + ผู้เล่น + จอผู้จัด) */
+body.theme-join,
+body.theme-play,
+body.theme-host{
+  --fg:#fff;
+  --muted:rgba(255,255,255,.76);
+  --hairline:rgba(255,255,255,.18);
+  background:var(--purple-bg);
+}
+body.theme-join::before,
+body.theme-play::before,
+body.theme-host::before{
+  content:""; position:fixed; inset:0; z-index:0; pointer-events:none;
+  background:url("../img/bg-kahoot.svg") center/cover no-repeat;
+}
+body.theme-join > *,
+body.theme-play > *,
+body.theme-host > *{position:relative; z-index:1}
+
+/* ธีมสว่าง (แอดมิน) */
+body.theme-admin{background:var(--bg); --fg:var(--ink); --muted:var(--gray); --hairline:var(--line)}
+
+/* ---------- 3. utilities ---------- */
+.wrap{width:100%; max-width:1320px; margin:0 auto; padding:clamp(12px,2vw,22px)}
+.col{display:flex; flex-direction:column}
+.row{display:flex; align-items:center}
+.row-between{display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap}
+.spacer{flex:1}
+.tc{text-align:center}
+.muted{color:var(--muted)}
+.small{font-size:13px}
+.tiny{font-size:11.5px; line-height:1.55}
+.mono{font-variant-numeric:tabular-nums; letter-spacing:.01em}
+.hidden{display:none !important}
+.grid{display:grid; gap:14px}
+.grid-2{grid-template-columns:repeat(2,minmax(0,1fr))}
+.grid-3{grid-template-columns:repeat(3,minmax(0,1fr))}
+.loader{
+  width:22px; height:22px; border-radius:50%; margin:0 auto;
+  border:3px solid rgba(0,0,0,.12); border-top-color:var(--purple);
+  animation:spin .8s linear infinite;
+}
+body.theme-play .loader,
+body.theme-host .loader,
+body.theme-join .loader{border-color:rgba(255,255,255,.25); border-top-color:#fff}
+@keyframes spin{to{transform:rotate(360deg)}}
+.dot{width:7px; height:7px; border-radius:50%; background:currentColor; flex:0 0 auto}
+@keyframes kpulse{0%{box-shadow:0 0 0 0 rgba(226,27,67,.4)}70%{box-shadow:0 0 0 7px rgba(226,27,67,0)}100%{box-shadow:0 0 0 0 rgba(226,27,67,0)}}
+
+/* ---------- 4. buttons ---------- */
+.btn{
+  display:inline-flex; align-items:center; justify-content:center; gap:8px;
+  padding:11px 18px; border-radius:var(--r-xs); border:2px solid transparent;
+  font-size:14.5px; font-weight:800; line-height:1.15; letter-spacing:.01em;
+  cursor:pointer; text-decoration:none; white-space:nowrap;
+  background:#fff; color:var(--ink); border-color:rgba(0,0,0,.12); box-shadow:var(--sh-btn);
+  transition:transform .07s, filter .15s, background .15s, box-shadow .07s;
+}
+.btn:hover{filter:brightness(1.04)}
+.btn:active{transform:translateY(3px); box-shadow:none}
+.btn:disabled{opacity:.45; cursor:not-allowed; transform:none; box-shadow:none}
+.btn-primary{background:var(--purple); color:#fff}
+.btn-dark{background:var(--dark); color:#fff}
+.btn-accent{background:var(--a3); color:#1a1a1a}
+.btn-ok{background:var(--ok); color:#fff}
+.btn-danger{background:#fff; color:var(--bad); border-color:rgba(226,27,67,.45)}
+.btn-ghost{background:transparent; color:var(--fg); border-color:var(--hairline); box-shadow:none}
+.btn-ghost:hover{background:rgba(0,0,0,.05)}
+.btn-lg{padding:14px 24px; font-size:16px}
+.btn-sm{padding:7px 12px; font-size:12.5px; border-width:2px}
+.btn-block{width:100%}
+.btn-icon{width:34px; height:34px; padding:0}
+
+/* ปุ่มหลักแบบ Kahoot (#333 + เงา inset) */
+.btn-enter{
+  width:100%; height:44px; border:none; border-radius:var(--r-xs);
+  background:var(--dark); color:#fff; font-size:15px; font-weight:800;
+  letter-spacing:.02em; cursor:pointer; font-family:inherit;
+  box-shadow:inset 0 -4px 0 rgba(0,0,0,.22);
+  transition:background .15s, transform .07s, box-shadow .07s;
+}
+.btn-enter:hover{background:#3d3d3d}
+.btn-enter:active{transform:translateY(2px); box-shadow:none}
+.btn-enter:disabled{opacity:.5; cursor:not-allowed; transform:none}
+
+/* ปุ่ม "hero" บนพื้นม่วง (คอนทราสต์สูงแบบ Kahoot) */
+.btn-hero{background:#fff; color:var(--purple)}
+.btn-hero:hover{background:#f2f2f2}
+
+/* ปุ่มในธีมมืด */
+body.theme-play .btn-ghost,
+body.theme-host .btn-ghost{color:#fff; border-color:rgba(255,255,255,.32); background:rgba(255,255,255,.10)}
+body.theme-play .btn-ghost:hover,
+body.theme-host .btn-ghost:hover{background:rgba(255,255,255,.20)}
+body.theme-play .btn,
+body.theme-host .btn{box-shadow:0 3px 0 rgba(0,0,0,.28)}
+body.theme-play .btn-ghost,
+body.theme-host .btn-ghost{box-shadow:none}
+
+/* ---------- 5. cards / forms ---------- */
+.card{
+  background:var(--surface); color:var(--ink);
+  border-radius:var(--r); padding:clamp(14px,1.6vw,20px);
+  box-shadow:var(--sh-card);
+}
+body.theme-play .card,
+body.theme-host .card,
+body.theme-join .card{--fg:var(--ink); --muted:var(--gray); --hairline:var(--line)}
+.card-tight{padding:14px}
+.card-head{display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap; margin-bottom:12px}
+.card-title{font-size:15px; font-weight:900; letter-spacing:.02em; text-transform:uppercase; color:var(--ink)}
+
+label.field{display:block; margin-bottom:13px}
+label.field > span{display:block; font-size:11px; font-weight:900; letter-spacing:.09em; text-transform:uppercase; color:var(--muted); margin-bottom:6px}
+input,textarea,select{
+  width:100%; padding:11px 13px; border-radius:var(--r-xs); font-size:15px; font-weight:700;
+  color:var(--ink); background:#fff; border:2px solid var(--line); outline:none;
+  transition:border-color .15s, box-shadow .15s;
+}
+input::placeholder,textarea::placeholder{color:#a9a9a9; font-weight:600}
+input:focus,textarea:focus,select:focus{border-color:var(--purple); box-shadow:0 0 0 3px rgba(70,23,143,.14)}
+textarea{resize:vertical; min-height:92px; line-height:1.6; font-weight:600}
+input[type=file]{padding:9px 11px; font-size:13px}
+input[type=checkbox],input[type=radio]{width:auto}
+.switch{display:inline-flex; align-items:center; gap:8px; font-size:13px; font-weight:700; color:var(--muted); cursor:pointer}
+.switch input{width:17px; height:17px; accent-color:var(--purple)}
+
+.pill{
+  display:inline-flex; align-items:center; gap:6px; padding:5px 11px; border-radius:var(--r-pill);
+  font-size:11.5px; font-weight:900; letter-spacing:.04em; text-transform:uppercase;
+  background:rgba(0,0,0,.07); color:var(--ink); border:none; white-space:nowrap;
+}
+body.theme-play .pill,
+body.theme-host .pill,
+body.theme-join .pill{background:rgba(255,255,255,.16); color:#fff}
+body.theme-play .card .pill,
+body.theme-host .card .pill,
+.card .pill{background:rgba(0,0,0,.07); color:var(--ink)}
+.pill-ok{background:rgba(38,137,12,.16) !important; color:#1e6b09 !important}
+.pill-warn{background:rgba(255,166,2,.22) !important; color:#8a5a00 !important}
+.pill-live{background:rgba(255,255,255,.16) !important; color:#fff !important}
+.pill-live .dot{animation:kpulse 1.8s infinite; color:#ff8fa3}
+
+.tabs{display:flex; gap:4px; padding:4px; border-radius:var(--r); background:#ececec}
+.tabs button{
+  flex:1; padding:9px 12px; border:none; border-radius:6px; background:transparent;
+  color:var(--gray); font-weight:800; font-size:12.5px; letter-spacing:.03em;
+  text-transform:uppercase; cursor:pointer; transition:background .15s, color .15s;
+}
+.tabs button.on{background:#fff; color:var(--purple); box-shadow:0 1px 3px rgba(0,0,0,.14)}
+
+.progress{height:8px; border-radius:var(--r-pill); background:rgba(0,0,0,.10); overflow:hidden}
+.progress i{display:block; height:100%; width:0; border-radius:inherit; background:var(--purple); transition:width .4s}
+body.theme-host .progress{background:rgba(255,255,255,.22)}
+body.theme-host .progress i{background:#ffd166}
+
+/* ---------- 6. topbar ---------- */
+.topbar{
+  display:flex; align-items:center; gap:10px; flex-wrap:wrap;
+  padding:8px 0 12px;
+}
+.brand{display:flex; align-items:center; gap:9px; font-weight:900; letter-spacing:-.02em}
+.brand .logo{
+  width:34px; height:34px; border-radius:10px; display:grid; place-items:center;
+  font-size:17px; background:#fff; color:var(--purple); box-shadow:0 3px 0 rgba(0,0,0,.18);
+}
+.brand-name{font-size:14px; text-transform:uppercase; letter-spacing:.08em}
+.theme-admin .brand .logo{background:var(--purple); color:#fff}
+body.theme-host .brand .logo{background:#fff; color:var(--purple)}
+body.theme-host #top-status{background:rgba(255,255,255,.16) !important; color:#fff !important}
+.pin-chip{
+  display:inline-flex; align-items:center; gap:7px; padding:6px 12px; border-radius:var(--r-xs);
+  background:#fff; color:var(--purple); font-weight:900; font-size:14px; letter-spacing:.10em;
+}
+body.theme-admin .pin-chip{background:var(--purple); color:#fff}
+
+/* ---------- 7. หน้าแรก / เข้าร่วม ---------- */
+.k-page{min-height:100dvh; display:flex; flex-direction:column; padding:16px clamp(14px,4vw,32px) 18px}
+.k-top{display:flex; align-items:center; justify-content:flex-end; min-height:34px}
+.k-link{
+  color:#fff; font-weight:800; font-size:12.5px; padding:7px 12px; border-radius:var(--r-xs);
+  border:none; background:rgba(255,255,255,.14); cursor:pointer; font-family:inherit;
+}
+.k-link:hover{background:rgba(255,255,255,.26)}
+.k-main{flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:clamp(24px,4.4vh,46px); padding:10px 0 26px}
+.k-logo-big{
+  font-weight:900; font-size:clamp(30px,4.2vw,48px); line-height:.95; text-align:center;
+  letter-spacing:-.045em; color:#fff; text-transform:lowercase; text-shadow:0 4px 0 rgba(0,0,0,.18);
+}
+.k-logo-big span{display:inline-block; transform:rotate(-2.5deg)}
+.k-logo-big em{font-style:normal; color:#fff}
+.k-card{
+  width:min(324px,calc(100vw - 40px)); padding:16px; border-radius:var(--r-xs);
+  background:#fff; box-shadow:0 3px 10px rgba(0,0,0,.22);
+}
+.k-join{display:flex; flex-direction:column; gap:10px}
+.k-input{
+  height:48px; width:100%; border-radius:var(--r-xs); border:2px solid #ccc; background:#fff;
+  font-size:16px; font-weight:800; text-align:center; color:#333; letter-spacing:.16em; padding:0 10px;
+}
+.k-input::placeholder{color:#b2b2b2; letter-spacing:.02em; font-weight:800; font-size:15px}
+.k-input:focus{border-color:#333; box-shadow:none}
+.k-note{color:rgba(255,255,255,.72); font-size:12.5px; text-align:center; font-weight:700; max-width:340px; line-height:1.6; margin-top:-8px}
+.k-host{width:100%; max-width:380px; color:var(--ink)}
+
+/* ---------- 8. ผู้เล่น ---------- */
+.play-shell{min-height:100dvh; display:flex; flex-direction:column; padding:0 clamp(12px,3vw,20px) 14px}
+.play-top{
+  display:flex; align-items:center; gap:10px; padding:12px 0 10px;
+  font-weight:900;
+}
+.play-top .brand .logo{width:30px; height:30px; border-radius:9px; font-size:15px}
+.play-top .brand-name{font-size:13px; letter-spacing:.10em}
+.scorebar{display:flex; align-items:center; gap:8px; margin-left:auto; min-width:0}
+.scorebar .who{
+  font-size:13px; font-weight:800; color:rgba(255,255,255,.9);
+  max-width:34vw; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;
+}
+.scorebar .pts{
+  font-size:20px; font-weight:900; color:#fff; letter-spacing:-.01em;
+  font-variant-numeric:tabular-nums;
+}
+.screen{display:none; flex:1; min-height:0; flex-direction:column; gap:12px; padding:4px 0}
+.screen.on{display:flex}
+.play-shell #s-join,.play-shell #s-lobby,.play-shell #s-answered,
+.play-shell #s-reveal,.play-shell #s-error{justify-content:center}
+.play-shell #s-question{justify-content:flex-start}
+.play-shell .card{border-radius:var(--r)}
+.input-nick{
+  height:56px; font-size:20px; font-weight:800; text-align:center; letter-spacing:.01em;
+  border-radius:var(--r-xs); border:2px solid #ccc; color:#333;
+}
+.input-nick::placeholder{color:#b2b2b2; font-weight:800; font-size:17px}
+.input-nick:focus{border-color:#333; box-shadow:0 0 0 3px rgba(51,51,51,.14)}
+.bigresult{font-size:clamp(28px,8vw,40px); font-weight:900; letter-spacing:-.02em; line-height:1.1}
+.plus{
+  font-size:clamp(30px,8.5vw,42px); font-weight:900; color:var(--a4);
+  font-variant-numeric:tabular-nums; letter-spacing:-.02em; line-height:1;
+}
+.plus.red{color:var(--bad)}
+.play-shell .btn-enter{height:54px; font-size:16.5px}
+.num{font-variant-numeric:tabular-nums}
+.prompt{font-size:clamp(18px,4.6vw,24px); font-weight:900; line-height:1.3; letter-spacing:-.01em; color:#fff}
+.qimg{display:block; max-height:26vh; border-radius:var(--r); object-fit:contain; margin:0 auto}
+
+/* ตัวจับเวลาวงกลมของผู้เล่น */
+.timer{position:relative; width:76px; height:76px; flex:0 0 auto; display:grid; place-items:center}
+.timer svg{transform:rotate(-90deg); width:100%; height:100%; display:block}
+.timer circle{fill:none; stroke-width:7; stroke-linecap:round}
+.timer .track{stroke:rgba(255,255,255,.26)}
+.timer .prog{stroke:#fff; transition:stroke-dashoffset .9s linear}
+.timer .num,.timer .tnum{
+  position:absolute; inset:0; display:grid; place-items:center;
+  font-size:26px; font-weight:900; color:#fff; font-variant-numeric:tabular-nums;
+}
+
+/* ไทล์คำตอบ (ผู้เล่น) */
+.answers{display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:10px}
+.answers.count-2{grid-template-columns:1fr}
+.answers.count-3{grid-template-columns:1fr 1fr}
+.answers.count-3 .ans:last-child{grid-column:span 2}
+.ans{
+  position:relative; display:flex; align-items:center; gap:14px; text-align:left;
+  padding:16px 18px; min-height:86px; border:none; border-radius:var(--r-xs);
+  color:#fff; font-weight:900; font-size:clamp(16px,2.2vw,21px); line-height:1.25;
+  cursor:pointer; box-shadow:var(--sh-tile); overflow:hidden;
+  transition:transform .08s, filter .12s, opacity .2s, outline-color .15s;
+}
+.ans:hover:not(:disabled){filter:brightness(1.1)}
+.ans:active:not(:disabled){transform:translateY(3px); box-shadow:none}
+.ans:disabled{cursor:default}
+.ans .shape{flex:0 0 auto; width:32px; display:grid; place-items:center; font-size:22px; line-height:1}
+.ans .lbl{flex:1; min-width:0}
+.ans .mark{flex:0 0 auto; font-size:22px}
+.ans .bar{position:absolute; left:0; bottom:0; height:5px; width:0; background:rgba(255,255,255,.45); transition:width .2s}
+.ans.c1{background:var(--a1)} .ans.c2{background:var(--a2)} .ans.c3{background:var(--a3)}
+.ans.c4{background:var(--a4)} .ans.c5{background:var(--a5)} .ans.c6{background:var(--a6)}
+.ans.chosen{outline:4px solid #fff; outline-offset:-4px}
+.ans.dim{opacity:.35}
+
+/* ผลเฉลย / ป้ายอันดับ (CSS ล้วน ไม่ใช้ emoji) */
+.verdict{
+  width:96px; height:96px; border-radius:50%; margin:0 auto;
+  display:grid; place-items:center; position:relative; background:#fff;
+}
+.verdict::after{content:""; display:block}
+.verdict.ok{background:var(--ok)}
+.verdict.ok::after{width:44px; height:22px; border-left:9px solid #fff; border-bottom:9px solid #fff; transform:rotate(-45deg) translate(3px,-4px)}
+.verdict.no{background:var(--bad)}
+.verdict.no::after{
+  width:44px; height:44px; background:
+    linear-gradient(45deg,transparent 46%,#fff 46%,#fff 54%,transparent 54%),
+    linear-gradient(-45deg,transparent 46%,#fff 46%,#fff 54%,transparent 54%);
+}
+.verdict.none{background:rgba(255,255,255,.22)}
+.verdict.none::after{
+  content:"?"; width:auto; height:auto; font-size:46px; font-weight:900; color:#fff; line-height:1;
+}
+.rankbadge{
+  width:clamp(84px,26vw,116px); height:clamp(84px,26vw,116px); border-radius:50%;
+  margin:0 auto; display:grid; place-items:center;
+  font-size:clamp(40px,12vw,58px); font-weight:900; line-height:1;
+  background:rgba(255,255,255,.18); color:#fff;
+}
+.card .rankbadge{background:#ece3fb; color:var(--purple)}
+.rankbadge.gold{background:linear-gradient(180deg,#ffd75e,#f2a600); color:#5a3a00}
+.rankbadge.silver{background:linear-gradient(180deg,#e6e9ee,#b9bfc9); color:#3d434d}
+.rankbadge.bronze{background:linear-gradient(180deg,#e7a06a,#c4703a); color:#4a2410}
+
+/* ---------- 9. จอผู้จัด (เวที) ---------- */
+body.theme-host .wrap{display:flex; flex-direction:column; min-height:100dvh}
+body.theme-host .screen.on{flex:1; justify-content:flex-start}
+/* ห้องรอ: PIN อยู่บน ผู้เข้าร่วมชิดล่างของจอ */
+#s-lobby .players-head{margin-top:auto}
+#s-lobby .players-grid{margin-bottom:4px}
+body.theme-host .card{box-shadow:var(--sh-pop)}
+#s-lobby.on{align-items:stretch}
+.lobby-hero{display:grid; grid-template-columns:minmax(0,1fr) auto; gap:clamp(16px,3vw,40px); align-items:center}
+.pin-block{display:flex; flex-direction:column; gap:4px; align-items:flex-start}
+.pin-label{font-size:12px; font-weight:900; letter-spacing:.14em; color:rgba(255,255,255,.7); text-transform:uppercase}
+.pin-display{
+  font-size:clamp(56px,10vw,132px); font-weight:900; line-height:.92; letter-spacing:.02em;
+  color:#fff; font-variant-numeric:tabular-nums; text-shadow:0 6px 0 rgba(0,0,0,.22);
+}
+.join-hint{font-size:clamp(13px,1.3vw,17px); font-weight:800; color:rgba(255,255,255,.82); letter-spacing:.01em}
+.qr-side{display:flex; flex-direction:column; align-items:center; gap:8px}
+.qr{
+  background:#fff; padding:10px; border-radius:var(--r); box-shadow:var(--sh-pop);
+  width:clamp(150px,17vw,210px); height:clamp(150px,17vw,210px); display:grid; place-items:center;
+}
+.qr svg,.qr img{width:100%; height:100%; display:block}
+.joinurl{
+  font-size:12.5px; font-weight:800; color:rgba(255,255,255,.82); text-align:center;
+  max-width:240px; line-height:1.45; letter-spacing:.02em;
+}
+.lobby-actions{display:flex; align-items:center; gap:10px; flex-wrap:wrap; margin-top:clamp(14px,2vw,22px)}
+.players-grid{display:flex; flex-wrap:wrap; gap:8px}
+.players-grid.empty{
+  display:block; color:rgba(255,255,255,.6); font-size:13px; font-weight:700;
+  padding:14px 0; border-top:1px dashed rgba(255,255,255,.22); background:none;
+}
+.player-chip{
+  display:inline-flex; align-items:center; gap:8px; padding:6px 12px 6px 6px;
+  border-radius:var(--r-pill); background:rgba(255,255,255,.14); color:#fff;
+  font-weight:800; font-size:13.5px; animation:chipIn .25s ease-out;
+}
+@keyframes chipIn{from{transform:scale(.9); opacity:0}to{transform:none; opacity:1}}
+.player-chip .av{
+  width:24px; height:24px; border-radius:50%; display:grid; place-items:center;
+  background:#fff; color:var(--purple); font-size:11px; font-weight:900; flex:0 0 auto;
+}
+.player-chip .nm{max-width:180px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap}
+
+/* การ์ดคำถามบนเวที */
+.qcard{
+  background:#fff; border-radius:var(--r); padding:clamp(14px,2vw,24px) clamp(16px,2.4vw,30px);
+  box-shadow:var(--sh-pop);
+}
+.host-prompt{
+  font-size:clamp(22px,3.4vw,38px); font-weight:900; line-height:1.25; color:var(--ink);
+  letter-spacing:-.02em; text-align:center;
+}
+.stage-head{display:flex; align-items:center; gap:14px}
+.stage-head .timer-big{margin-left:auto}
+.timer-big{
+  width:76px; height:76px; border-radius:50%; display:grid; place-items:center;
+  background:#fff; color:var(--purple); font-size:30px; font-weight:900;
+  font-variant-numeric:tabular-nums; border:6px solid rgba(255,255,255,.3);
+  background-clip:padding-box; box-shadow:0 6px 18px rgba(0,0,0,.25);
+  flex:0 0 auto; transition:transform .2s;
+}
+.timer-big.urgent{color:var(--bad); border-color:rgba(226,27,67,.45)}
+.stat{display:flex; flex-direction:column; align-items:center; gap:1px}
+.stat .v{font-size:26px; font-weight:900; line-height:1; color:#fff; font-variant-numeric:tabular-nums}
+.stat .k{font-size:10.5px; font-weight:900; letter-spacing:.09em; text-transform:uppercase; color:rgba(255,255,255,.66)}
+.host-answers{display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:12px}
+.host-ans{
+  display:flex; align-items:center; justify-content:center; gap:14px; padding:14px 18px;
+  border-radius:var(--r-xs); color:#fff; font-weight:900;
+  font-size:clamp(16px,2.3vw,30px); line-height:1.2; text-align:center;
+  box-shadow:var(--sh-tile); min-height:64px;
+  transition:opacity .25s, filter .25s, outline-color .2s;
+}
+.host-ans .sh{font-size:clamp(16px,1.6vw,22px); width:30px; text-align:center; flex:0 0 auto}
+.host-ans.c1{background:var(--a1)} .host-ans.c2{background:var(--a2)} .host-ans.c3{background:var(--a3)}
+.host-ans.c4{background:var(--a4)} .host-ans.c5{background:var(--a5)} .host-ans.c6{background:var(--a6)}
+.host-ans.is-correct{outline:5px solid #fff; outline-offset:3px}
+.host-ans.not-correct{opacity:.45; filter:grayscale(.35)}
+#s-question.on{flex-direction:column; gap:10px}
+#s-question .host-answers{flex:1; min-height:0}
+#s-question .host-ans{align-items:center}
+.answered-bar{
+  display:inline-flex; align-items:center; gap:10px; align-self:center;
+  padding:10px 24px; border-radius:var(--r-xs); background:var(--purple); color:#fff;
+  font-size:clamp(16px,2vw,24px); font-weight:900; letter-spacing:.01em;
+  box-shadow:0 6px 18px rgba(0,0,0,.25);
+}
+.answered-bar b{font-variant-numeric:tabular-nums}
+.stage-foot{display:flex; align-items:center; gap:10px; flex-wrap:wrap}
+.footbar{display:flex; align-items:center; gap:10px; flex-wrap:wrap; margin-top:clamp(8px,1.4vw,14px)}
+body.theme-host .footbar .switch{color:rgba(255,255,255,.8)}
+body.theme-host .switch input{accent-color:#ffd166}
+
+/* ---------- 10. แอดมิน ---------- */
+.theme-admin .topbar{
+  background:#fff; border-radius:var(--r); padding:12px 16px; margin-bottom:16px;
+  box-shadow:var(--sh-card);
+}
+.editor-actions{display:flex; gap:8px; flex-wrap:wrap}
+.quiz-card{
+  position:relative; background:#fff; border-radius:var(--r-lg); padding:18px;
+  box-shadow:var(--sh-card); display:flex; flex-direction:column; gap:10px;
+  transition:transform .15s, box-shadow .15s;
+}
+.quiz-card:hover{transform:translateY(-3px); box-shadow:0 4px 0 rgba(0,0,0,.06), 0 16px 34px rgba(0,0,0,.13)}
+.quiz-card > .row{gap:12px; width:100%}
+.quiz-card > .row > div:last-child{flex:1; min-width:0}
+.quiz-card > .row:first-child > div:last-child > div:first-child{
+  font-size:15.5px; font-weight:900; letter-spacing:-.01em;
+  overflow:hidden; text-overflow:ellipsis; white-space:nowrap;
+}
+.quiz-emoji{
+  width:46px; height:46px; border-radius:12px; display:grid; place-items:center;
+  font-size:23px; background:linear-gradient(150deg,var(--purple),#7b3fd4); color:#fff; flex:0 0 auto;
+}
+.quiz-title{font-size:17px; font-weight:900; letter-spacing:-.01em; line-height:1.3}
+.q-item{
+  display:flex; gap:12px; align-items:flex-start; padding:12px 14px; border-radius:var(--r);
+  background:#fafafa; border:2px solid var(--line);
+}
+.qnum{
+  width:26px; height:26px; border-radius:50%; flex:0 0 auto; display:grid; place-items:center;
+  background:var(--purple); color:#fff; font-size:12px; font-weight:900;
+}
+.opt-row{display:flex; align-items:center; gap:8px; font-size:13px; font-weight:700; color:var(--ink)}
+.correct-tag{
+  display:inline-flex; align-items:center; gap:5px; padding:2px 8px; border-radius:var(--r-pill);
+  background:rgba(38,137,12,.14); color:#1e6b09; font-size:10.5px; font-weight:900;
+  letter-spacing:.05em; text-transform:uppercase;
+}
+.emoji-row{display:flex; gap:8px; flex-wrap:wrap}
+.emoji-row button{
+  width:44px; height:44px; border-radius:var(--r); font-size:20px; cursor:pointer;
+  background:#fff; border:2px solid var(--line); transition:border-color .15s, transform .1s;
+}
+.emoji-row button:hover{border-color:var(--purple); transform:translateY(-2px)}
+
+/* ---------- 11. lists / bars ---------- */
+.res-list{display:flex; flex-direction:column; gap:8px}
+.res-row{
+  display:flex; align-items:center; gap:12px;
+  padding:10px 14px; border-radius:var(--r); background:rgba(255,255,255,.10); color:#fff;
+}
+.res-row.me{background:rgba(255,255,255,.26); outline:2px solid rgba(255,255,255,.55); outline-offset:-2px}
+.card .res-row.me,body.theme-admin .res-row.me{background:#efe8fb; outline-color:var(--purple)}
+body.theme-admin .res-row,.card .res-row{background:#f6f6f6; color:var(--ink)}
+.res-row .nm{flex:1; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; font-weight:800}
+.res-row .sc{font-weight:900; font-variant-numeric:tabular-nums; font-size:17px}
+.res-row.top3{background:rgba(255,255,255,.22)}
+.rank{
+  width:32px; height:32px; border-radius:50%; display:grid; place-items:center;
+  background:rgba(255,255,255,.2); color:#fff; font-size:14px; font-weight:900;
+  font-variant-numeric:tabular-nums;
+}
+.card .rank,body.theme-admin .rank{background:#e6e6e6; color:var(--ink)}
+.rank.t1{background:linear-gradient(180deg,#ffd75e,#f2a600); color:#5a3a00}
+.rank.t2{background:linear-gradient(180deg,#e6e9ee,#b9bfc9); color:#3d434d}
+.rank.t3{background:linear-gradient(180deg,#e7a06a,#c4703a); color:#4a2410}
+.bars{display:flex; flex-direction:column; gap:12px}
+.bar-row{display:grid; grid-template-columns:minmax(0,1fr) 40px; gap:10px; align-items:center}
+.bar-name{font-size:11.5px; font-weight:800; color:var(--muted); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; margin-bottom:4px}
+.bar-wrap{height:26px; border-radius:5px; background:#efefef; overflow:hidden}
+.bar-fill{height:100%; border-radius:5px; transition:width .55s cubic-bezier(.2,.8,.2,1)}
+.bar-row .n{font-size:15px; font-weight:900; text-align:right; font-variant-numeric:tabular-nums; color:var(--ink)}
+.bars .bar-wrap{background:#efefef}
+
+/* ---------- 12. responsive (ต้องอยู่ท้ายสุด) ---------- */
+@media(max-width:900px){
+  .grid-2,.grid-3{grid-template-columns:1fr}
+  .lobby-hero{grid-template-columns:1fr; text-align:center}
+  .qr-side{align-items:center}
+  .host-answers{grid-template-columns:1fr}
+  #reveal-grid{grid-template-columns:1fr !important}
+}
+@media(max-width:520px){
+  /* มือถือ: ไทล์คำตอบของผู้เล่นเป็น 2×2 เต็มจอ ทรงอยู่บน ข้อความอยู่ล่าง */
+  .play-shell #s-question .answers{flex:1; min-height:0; grid-auto-rows:minmax(96px,1fr)}
+  .play-shell #s-question .ans{
+    flex-direction:column; justify-content:center; align-items:center; text-align:center;
+    gap:8px; min-height:118px; padding:12px 10px; font-size:16.5px;
+  }
+  .play-shell #s-question .ans .shape{font-size:22px; width:auto}
+  .play-shell #s-question .ans .lbl{flex:0 1 auto; width:100%}
+  .pin-display{font-size:clamp(46px,15vw,76px)}
+  .scorebar .who{max-width:26vw}
+  .timer{width:64px; height:64px}
+  .timer .tnum{font-size:21px}
+  .res-row{gap:9px; padding:9px 11px}
+  .res-row .sc{font-size:15px}
+  .rank{width:28px; height:28px; font-size:12.5px}
+}
